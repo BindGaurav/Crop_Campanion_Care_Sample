@@ -6,49 +6,97 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/round"
     tools:context=".MainActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycle_view"
+
+
+    <!-- Main content -->
+    <RelativeLayout
+        android:id="@+id/main_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/bottom_layout" />
-
-    <RelativeLayout
-        android:id="@+id/bottom_layout"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:background="@drawable/round"
+        android:layout_alignParentTop="true"
         android:layout_alignParentBottom="true"
-        android:padding="8dp"
-        tools:ignore="ExtraText">
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true">
 
-        <EditText
-            android:id="@+id/Question"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycle_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Ask a Question"
-            android:textColorHint="#212121"
-            android:textColor="#212121"
-            android:padding="16dp"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/bottom_layout" />
+
+        <ImageView
+            android:id="@+id/watermarkImageView"
+            android:layout_width="213dp"
+            android:layout_height="206dp"
             android:layout_centerInParent="true"
-            android:background="@drawable/round"
-            android:minHeight="48dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="48dp" /> <!-- Extra padding to make space for the send button -->
-
-
+            android:alpha="0.2"
+            android:scaleType="fitCenter"
+            android:src="@drawable/watermarkmodified"
+            android:visibility="visible" />
+        <!--
         <ImageButton
-            android:id="@+id/Send"
-            android:layout_width="43dp"
-            android:layout_height="40dp"
+            android:id="@+id/account"
+            android:layout_width="30dp"
+            android:layout_height="33dp"
+            android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="10dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Send button to submit the question"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/round"
+            android:contentDescription="Top Right Button"
+            android:src="@drawable/baseline_account_circle_24" />
+            -->
+
+        <RelativeLayout
+            android:id="@+id/bottom_layout"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_alignParentBottom="true"
             android:padding="8dp"
-            android:src="@drawable/baseline_send_24" />
+            tools:ignore="ExtraText">
+
+            <EditText
+                android:id="@+id/Question"
+                android:layout_width="403dp"
+                android:layout_height="68dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/round"
+                android:hint="Ask a Question"
+                android:minHeight="48dp"
+                android:padding="16dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="48dp"
+                android:textColor="#212121"
+                android:textColorHint="#212121" />
+
+            <ImageButton
+                android:id="@+id/Send"
+                android:layout_width="43dp"
+                android:layout_height="40dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="10dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Send button to submit the question"
+                android:padding="8dp"
+                android:src="@drawable/baseline_send_24" />
+
+            <!---
+            <ImageButton
+                android:id="@+id/upload"
+                android:layout_width="43dp"
+                android:layout_height="55dp"
+                android:src="@drawable/baseline_upload_file_24" />
+            -->
+        </RelativeLayout>
+
     </RelativeLayout>
 
 </RelativeLayout>

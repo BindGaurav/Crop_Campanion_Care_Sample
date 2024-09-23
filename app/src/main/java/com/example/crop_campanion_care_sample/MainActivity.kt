@@ -1,12 +1,13 @@
 package com.example.crop_campanion_care_sample
 
 import ChatAdapter
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
+import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import okhttp3.*
@@ -14,8 +15,6 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.io.IOException
-import java.util.*
-import kotlin.concurrent.schedule
 
 class MainActivity : AppCompatActivity() {
     private val client = OkHttpClient()
@@ -29,10 +28,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // Initialize chat components
         recyclerView = findViewById(R.id.recycle_view)
         questionEditText = findViewById(R.id.Question)
         sendButton = findViewById(R.id.Send)
-
         chatAdapter = ChatAdapter()
         recyclerView.adapter = chatAdapter
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -67,31 +66,29 @@ class MainActivity : AppCompatActivity() {
     private fun showTypingEffect() {
         // Add typing indicator message
         addMessageToChat("...", false)
-
     }
 
     private fun getResponse(question: String, callback: (String) -> Unit) {
-        val apiKey = "004009d9bb3a4d029262e9691d60ccbc"  // Replace with your actual Azure OpenAI API key
-        val url = "https://chatbot-ccc0609.openai.azure.com/openai/deployments/chatbot-ccc0609/chat/completions?api-version=2023-03-15-preview"
+        val apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyAuf83Jt6Er2tqVOokHFQHHjznS8PvScys"
 
+        // Adjust the request body structure as per the Gemini API's requirements
         val requestBody = """
         {
-            "messages": [
+            "contents": [
                 {
-                    "role": "user",
-                    "content": "$question"
+                    "parts": [
+                        {
+                            "text": "$question"
+                        }
+                    ]
                 }
-            ],
-            "temperature": 0.7,
-            "max_tokens": 800,
-            "top_p": 0.95
+            ]
         }
         """.trimIndent()
 
         val request = Request.Builder()
-            .url(url)
+            .url(apiUrl)
             .addHeader("Content-Type", "application/json")
-            .addHeader("api-key", apiKey)
             .post(requestBody.toRequestBody("application/json".toMediaTypeOrNull()))
             .build()
 
@@ -116,17 +113,18 @@ class MainActivity : AppCompatActivity() {
                             throw Exception("API Error: $errorMessage")
                         }
 
-                        val choicesArray = jsonObject.getJSONArray("choices")
-                        if (choicesArray.length() > 0) {
-                            val firstChoice = choicesArray.getJSONObject(0)
-                            val messageContent = when {
-                                firstChoice.has("message") -> firstChoice.getJSONObject("message").getString("content")
-                                firstChoice.has("text") -> firstChoice.getString("text")
-                                else -> throw Exception("Unexpected response format")
+                        val candidates = jsonObject.getJSONArray("candidates")
+                        if (candidates.length() > 0) {
+                            val content = candidates.getJSONObject(0).getJSONObject("content")
+                            val parts = content.getJSONArray("parts")
+                            if (parts.length() > 0) {
+                                val messageContent = parts.getJSONObject(0).getString("text")
+                                callback(messageContent)
+                            } else {
+                                throw Exception("No text content found in the response")
                             }
-                            callback(messageContent)
                         } else {
-                            throw Exception("No choices in the response")
+                            throw Exception("No candidates found in the response")
                         }
                     } catch (e: Exception) {
                         Log.e("error", "Failed to parse response", e)
